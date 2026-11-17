@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CI/CD 静态网页自动部署</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #eef5ff, #e8f7f1);
+      font-family: "Microsoft YaHei", -apple-system, "Segoe UI", sans-serif;
+      color: #172033;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 48px 56px;
+      box-shadow: 0 18px 48px rgba(15, 23, 42, .12);
+      text-align: center;
+      max-width: 620px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 30px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #e8f0ff;
+      color: #1e66f5;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    p {
+      color: #667085;
+      line-height: 1.8;
+      margin: 8px 0;
+      font-size: 15px;
+    }
+
+    .meta {
+      margin-top: 26px;
+      padding-top: 18px;
+      border-top: 1px dashed #d0d5dd;
+      font-size: 13px;
+      color: #98a2b3;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="tag">GitHub Actions · GitHub Pages</div>
+    <h1>静态网页自动部署已生效</h1>
+    <p>本页面由 <strong>deploy-pages.yml</strong> 在 main 分支 push 后自动校验并发布。</p>
+    <p>版本：v1.1.0 · 部署方式：peaceiris/actions-gh-pages → gh-pages 分支</p>
+    <p>本次更新：验证修改页面后重新 push 可自动触发再次发布。</p>
+    <div class="meta">2024210402013 敖家辉 · 第 11 章 CI/CD 实验</div>
+  </div>
+</body>
+
+</html>
