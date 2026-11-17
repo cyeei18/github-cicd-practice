@@ -48,9 +48,13 @@ restart_backend() {
       kill "$(cat "${PIDFILE}")" 2>/dev/null || true
       sleep 1
     fi
-    ( cd "${current}/backend" && PORT="${APP_PORT}" HOST=127.0.0.1 \
-        nohup "$(command -v node)" dist/server.js >"${LOG}" 2>&1 & echo $! > "${PIDFILE}" )
-    sleep 1
+    # 关键：清掉 RUNNER_TRACKING_ID 并用 setsid 脱离当前会话，
+    # 否则工作流结束后 Runner 会把它当残留进程一起杀掉，服务随之下线。
+    ( cd "${current}/backend" && env -u RUNNER_TRACKING_ID PORT="${APP_PORT}" HOST=127.0.0.1 \
+        setsid nohup "$(command -v node)" dist/server.js >>"${LOG}" 2>&1 < /dev/null & )
+    sleep 1.5
+    pgrep -f "node dist/server.js" | head -n 1 > "${PIDFILE}" || true
+    log "后端已启动，pid=$(cat "${PIDFILE}" 2>/dev/null)"
   fi
 }
 
