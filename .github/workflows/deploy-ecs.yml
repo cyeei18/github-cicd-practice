@@ -1,0 +1,59 @@
+name: Build and Deploy Full Stack to ECS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ecs-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    # 部署机上的自托管 Runner：固定出口、可直接访问内网部署目录
+    runs-on: [self-hosted, linux, cicd-demo]
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Build and test frontend
+        working-directory: apps/frontend
+        run: |
+          npm ci
+          npm run lint
+          npm test
+          npm run build
+
+      - name: Build and test backend
+        working-directory: apps/backend
+        run: |
+          npm ci
+          npm run lint
+          npm test
+          npm run build
+          test -f dist/server.js
+
+      - name: Deploy release, check health, rollback if needed
+        env:
+          DEPLOY_ROOT: /srv/cicd-demo
+          APP_PORT: '3000'
+        run: |
+          RELEASE_SHA="${GITHUB_SHA:0:7}" SRC_ROOT="$GITHUB_WORKSPACE" bash scripts/deploy-server.sh
+
+      - name: Verify online endpoints
+        run: |
+          curl -fsS http://127.0.0.1/health && echo
+          curl -fsS http://127.0.0.1/api/hello && echo
+          curl -fsS http://127.0.0.1/api/version && echo
+          curl -fsSI http://127.0.0.1/ | head -n 1

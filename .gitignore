@@ -1,0 +1,6 @@
+node_modules/
+apps/frontend/dist/
+apps/backend/dist/
+*.log
+.cicd-runner/
+backend.pid
